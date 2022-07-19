@@ -25,6 +25,12 @@ namespace Dataplace.Imersao.Core.Domain.Orcamentos
             DtOrcamento = DateTime.Now;
             ValotTotal = 0;
             Itens = new List<OrcamentoItem>();
+            
+            // default
+            Situacao = OrcamentoStatusEnum.Cancelado;
+            DtCancelamento =  DateTime.Now;
+            ValotTotal = 0;
+            Itens = new List<OrcamentoItem>();
 
         }
 
@@ -41,6 +47,14 @@ namespace Dataplace.Imersao.Core.Domain.Orcamentos
         public string Usuario { get; private set; }
         public OrcamentoStatusEnum Situacao { get; private set; }
         public ICollection<OrcamentoItem> Itens { get; private set; }
+        public DateTime DtCancelamento { get; private set; }
+
+        public void insereitens (Orcamento item)
+        {
+            Itens.Add(item);
+
+        }
+
 
 
         public void FecharOrcamento()
@@ -60,7 +74,14 @@ namespace Dataplace.Imersao.Core.Domain.Orcamentos
             Situacao = OrcamentoStatusEnum.Aberto;
             DtFechamento = null;
         }
+        public void CancelarOrcamento()
+        {
+            if (Situacao == OrcamentoStatusEnum.Fechado)
+                throw new DomainException("Necessário abrir o Orçamento!");
 
+            Situacao = OrcamentoStatusEnum.Cancelado;
+            DtCancelamento = DateTime.Now.Date;
+        }
         public void DefinirValidade(int diasValidade)
         {
             this.Validade = new OrcamentoValidade(this, diasValidade);
@@ -79,16 +100,22 @@ namespace Dataplace.Imersao.Core.Domain.Orcamentos
             if (string.IsNullOrEmpty(CdFilial))
                 Validations.Add("Código da filial é requirido!");
 
+            if (string.IsNullOrEmpty(OrcamentoVendedor.))
+                Validations.Add("Obrigatório vendedor!");
+
+            if (string.IsNullOrEmpty(numOrcamento.))
+                Validations.Add("Número orçamento Obrigatório");
+
             if (Validations.Count > 0)
                 return false;
             else
                 return true;
         }
+        
+    #endregion
 
-        #endregion
-
-        #region factory methods
-        public static class Factory
+    #region factory methods
+    public static class Factory
         {
 
             public static Orcamento Orcamento(string cdEmpresa, string cdFilial, int numOrcamento, OrcamentoCliente cliente , string usuario, OrcamentoVendedor vendedor, OrcamentoTabelaPreco tabelaPreco)
