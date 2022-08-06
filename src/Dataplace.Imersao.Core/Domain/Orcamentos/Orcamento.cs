@@ -69,7 +69,7 @@ namespace Dataplace.Imersao.Core.Domain.Orcamentos
         public void ReabrirOrcamento()
         {
             if (Situacao == OrcamentoStatusEnum.Aberto)
-                throw new DomainException("Orçamento já está fechado!");
+                throw new DomainException("Orçamento já está fechado  !");
 
             Situacao = OrcamentoStatusEnum.Aberto;
             DtFechamento = null;
